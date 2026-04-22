@@ -5,6 +5,16 @@ from datetime import datetime
 from ligaost_team_shuffel import grouping  # your existing function
 import shutil
 
+from tkinter import messagebox
+
+def is_file_locked(filepath):
+    try:
+        with open(filepath, "a"):
+            pass
+        return False
+    except PermissionError:
+        return True
+
 def ensure_history_folder():
     folder = "round_history"
     if not os.path.exists(folder):
@@ -15,11 +25,6 @@ def has_sub(team):
     return any("(sub)" in player[0] for player in team)
 
 def write_round(player_file, round_file, accuracy):
-    import csv
-    import os
-    import random
-    from datetime import datetime
-
     # archive old file
     history_folder = ensure_history_folder()
 
@@ -187,7 +192,52 @@ def update_ratings_from_round(player_file, round_file, k):
                 players[p] += k * (a2 - e2)
 
     # write back to file
-    with open(player_file, mode="w", encoding="utf-8", newline="") as f:
-        writer = csv.writer(f, delimiter=';')
-        for name, rating in players.items():
-            writer.writerow([name, round(rating)])
+
+    history_folder = ensure_history_folder()
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    def write_players_to_file(filepath):
+        with open(filepath, mode="w", encoding="utf-8", newline="") as f:
+            writer = csv.writer(f, delimiter=';')
+            for name, rating in players.items():
+                writer.writerow([name, round(rating)])
+
+    # check if original file is locked
+    if is_file_locked(player_file):
+        # fallback file
+        fallback_file = os.path.join(
+            history_folder,
+            f"player_list_updated_{timestamp}.csv"
+        )
+
+        try:
+            write_players_to_file(fallback_file)
+
+            messagebox.showerror(
+                "File Locked",
+                f"{player_file} is currently open in another program and is not writable.\n\n"
+                f"Updated ratings were saved as:\n{fallback_file}\n\n"
+                "Please close the original file and then either replace it manually or press the button again." \
+                
+            )
+
+        except Exception as e:
+            messagebox.showerror(
+                "Critical Error",
+                f"Could not write updated player file:\n{e}"
+            )
+
+    else:
+        try:
+            write_players_to_file(player_file)
+
+            messagebox.showinfo(
+                "Success",
+                "Ratings updated successfully."
+            )
+
+        except Exception as e:
+            messagebox.showerror(
+                "Error",
+                f"Failed to write player file:\n{e}"
+            )

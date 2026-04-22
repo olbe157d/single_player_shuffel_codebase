@@ -7,13 +7,13 @@ BASIC WORKFLOW
 ------------------------------------------------------------
 
 Each round follows this exact sequence:
-0. Add Players to the player list. 
+0. Add Players to the player list. Close the file after you're done with editing.
    -> See how to Add players below. important!
 
 1. Click "New Round"
    -> Teams are generated and written to current_round.csv
 
-2. Open current_round.csv
+2. Open current_round.csv. Close the file after you're done with editing.
    ->Enter the match scores (e.g. 0:0 -> 3:2) to the file. don't touch anything else in the file. Just the score
 
 3. Click "Finish Round (Update Ratings)"

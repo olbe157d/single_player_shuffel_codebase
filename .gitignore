@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Generated runtime files
+current_round.csv
+team_shuffel.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# files
+notes_liga_ost.md
+player_list_copy.csv
+
+#build
+liga_ost_build/

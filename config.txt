@@ -1,0 +1,4 @@
+k=64
+player_file=player_list.csv
+round_file=current_round.csv
+accuracy=100
